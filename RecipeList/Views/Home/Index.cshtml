@@ -1,8 +1,38 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<style>
+    button {
+        transition: all 0.3s ease-in-out;
+        font-family: "Dosis", sans-serif;
+    }
 
+    button {
+        width: fit-content;
+        height: auto;
+        padding: 12px;
+        border-radius: 50px;
+        background-image: linear-gradient(135deg, #feb692 0%, #ea5455 100%);
+        box-shadow: 0 20px 30px -6px rgba(238, 103, 97, 0.5);
+        outline: none;
+        cursor: pointer;
+        border: none;
+        font-size: 24px;
+        color: white;
+        font-weight: bold;
+        
+    }
+
+    button:hover {
+            transform: translateY(3px);
+            box-shadow: none;
+        }
+
+    button:active {
+            opacity: 0.5;
+        }
+</style>
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <a href="/Recipes"><button>Go to list</button></a>
+    
 </div>

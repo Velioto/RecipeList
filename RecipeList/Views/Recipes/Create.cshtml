@@ -3,7 +3,126 @@
 @{
     ViewData["Title"] = "Create";
 }
+<style>
+    .field-container {
+        position: relative;
+        margin-top: 50px;
+        margin-right: 50px;
+        margin-bottom: 5px;
+        width: 200px;
+    }
 
+    .field-container-first {
+        position: relative;
+        margin-right: 50px;
+        margin-bottom: 5px;
+        width: 200px;
+    }
+
+    .field-container span {
+        color: red
+    }
+    .input-container {
+      position: relative;
+      margin-top: 50px auto;
+      margin-right: 50px auto;
+      margin-left: 50px auto;
+      width: 200px;
+    }
+
+    .input-container-desc {
+        position: relative;
+        margin-top: 50px auto;
+        margin-right: 50px auto;
+        margin-left: 50px auto;
+        width: 500px;
+    }
+
+    .input-container input[type="text"] {
+      font-size: 20px;
+      width: 100%;
+      border: none;
+      border-bottom: 2px solid #ccc;
+      padding: 5px 0;
+      background-color: transparent;
+      outline: none;
+    }
+
+    .input-container-desc input[type="text"] {
+        font-size: 20px;
+        width: 100%;
+        border: none;
+        border-bottom: 2px solid #ccc;
+        padding: 5px 0;
+        background-color: transparent;
+        outline: none;
+    }
+
+    .input-container .label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: #ccc;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .input-container-desc .label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: #ccc;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+
+    .input-container input[type="text"]:focus ~ .label,
+    .input-container input[type="text"]:valid ~ .label {
+      top: -20px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .input-container-desc input[type="text"]:focus ~ .label,
+    .input-container-desc input[type="text"]:valid ~ .label {
+        top: -20px;
+        font-size: 16px;
+        color: #333;
+    }
+
+    .input-container .underline {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      width: 100%;
+      background-color: #333;
+      transform: scaleX(0);
+      transition: all 0.3s ease;
+    }
+
+    .input-container-desc .underline {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 100%;
+        background-color: #333;
+        transform: scaleX(0);
+        transition: all 0.3s ease;
+    }
+
+    .input-container input[type="text"]:focus ~ .underline,
+    .input-container input[type="text"]:valid ~ .underline {
+      transform: scaleX(1);
+     }
+
+    .input-container-desc input[type="text"]:focus ~ .underline,
+    .input-container-desc input[type="text"]:valid ~ .underline {
+        transform: scaleX(1);
+    }
+</style>
 <h1>Create</h1>
 
 <h4>Recipes</h4>
@@ -11,42 +130,84 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+            <!--Name-->
+            <div class="field-container-first">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="input-container">
+                    <input type="text" id="input" required="true" asp-for="Name">
+                    <label for="input" class="label" asp-for="Name">Name</label>
+                    <div class="underline"></div>
+                </div>
+            <span class="required-field" asp-validation-for="Name"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="UserID" class="control-label"></label>
-                <input asp-for="UserID" class="form-control" />
-                <span asp-validation-for="UserID" class="text-danger"></span>
+
+            <!--UserID-->
+            <div class="field-container">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="input-container">
+                    <input type="text" id="input" required="true" asp-for="UserID">
+                    <label for="input" class="label" asp-for="UserID">UserID</label>
+                    <div class="underline"></div>
+                </div>
+                <span class="required-field" asp-validation-for="UserID"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Calories" class="control-label"></label>
-                <input asp-for="Calories" class="form-control" />
-                <span asp-validation-for="Calories" class="text-danger"></span>
+
+            <!--Calories-->
+            <div class="field-container">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="input-container">
+                    <input type="text" id="input" required="true" asp-for="Calories">
+                    <label for="input" class="label" asp-for="Calories">Calories</label>
+                    <div class="underline"></div>
+                </div>
+                <span class="required-field" asp-validation-for="Calories"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Fats" class="control-label"></label>
-                <input asp-for="Fats" class="form-control" />
-                <span asp-validation-for="Fats" class="text-danger"></span>
+
+            <!--Fats-->
+            <div class="field-container">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="input-container">
+                    <input type="text" id="input" required="true" asp-for="Fats">
+                    <label for="input" class="label" asp-for="Fats">Fats</label>
+                    <div class="underline"></div>
+                </div>
+                <span class="required-field" asp-validation-for="Fats"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Carbs" class="control-label"></label>
-                <input asp-for="Carbs" class="form-control" />
-                <span asp-validation-for="Carbs" class="text-danger"></span>
+
+            <!--Carbs-->
+            <div class="field-container">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="input-container">
+                    <input type="text" id="input" required="true" asp-for="Carbs">
+                    <label for="input" class="label" asp-for="Carbs">Carbs</label>
+                    <div class="underline"></div>
+                </div>
+                <span class="required-field" asp-validation-for="Carbs"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Proteins" class="control-label"></label>
-                <input asp-for="Proteins" class="form-control" />
-                <span asp-validation-for="Proteins" class="text-danger"></span>
+
+            <!--Proteins-->
+            <div class="field-container">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="input-container">
+                    <input type="text" id="input" required="true" asp-for="Proteins">
+                    <label for="input" class="label" asp-for="Proteins">Proteins</label>
+                    <div class="underline"></div>
+                </div>
+                <span class="required-field" asp-validation-for="Proteins"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+
+            <!--Description-->
+            <div class="field-container">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="input-container-desc">
+                    <input type="text" id="input" required="true" asp-for="Description">
+                    <label for="input" class="label" asp-for="Description">Description</label>
+                    <div class="underline"></div>
+                </div>
+                <span class="required-field" asp-validation-for="Description"></span>
             </div>
+
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
