@@ -1,0 +1,4 @@
+backend-tyrsachka, razlichni listove, vyzmozhnost za publikuvane, da se vijdat koi e napravil, da ne se vijda site-a kogato ne si lognat 
+
+
+frontend- za logvane, homepage(tvoi list, tyrsene i syzdavane), otvarqne na gotova recepta, 
