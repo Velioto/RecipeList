@@ -5,7 +5,7 @@
 namespace RecipeList.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class First : Migration
+    public partial class CreateRecipeModel : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,6 @@ namespace RecipeList.Data.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false),
                     Calories = table.Column<int>(type: "int", nullable: false),
                     Fats = table.Column<int>(type: "int", nullable: false),
                     Carbs = table.Column<int>(type: "int", nullable: false),
