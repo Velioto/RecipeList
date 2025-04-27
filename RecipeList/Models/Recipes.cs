@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RecipeList.Models
 {
@@ -11,6 +12,10 @@ namespace RecipeList.Models
         public int Carbs { get; set; }
         public int Proteins { get; set; }
         public string Description { get; set; }
-     
+        public string? UserId { get; set; }
+        public virtual IdentityUser? User { get; set; }
+
+
     }
 }
+    

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,16 +14,18 @@ namespace RecipeList.Controllers
     public class RecipesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public RecipesController(ApplicationDbContext context)
+        public RecipesController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Recipes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Recipes.ToListAsync());
+            return View(await _context.Recipes.Include(r => r.User).ToListAsync());
         }
 
         // GET: Recipes/Details/5
@@ -33,7 +36,7 @@ namespace RecipeList.Controllers
                 return NotFound();
             }
 
-            var recipes = await _context.Recipes
+            var recipes = await _context.Recipes.Include(r => r.User)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (recipes == null)
             {
@@ -54,10 +57,23 @@ namespace RecipeList.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,UserID,Calories,Fats,Carbs,Proteins,Description")] Recipes recipes)
+        public async Task<IActionResult> Create([Bind("ID,Name,Calories,Fats,Carbs,Proteins,Description")] Recipes recipes)
         {
+            if (!ModelState.IsValid)
+            {
+                // Log or print validation errors
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine(error.ErrorMessage); // Or log it to a file or debug console
+                }
+                return View(recipes); // Return the view with errors
+            }
+
             if (ModelState.IsValid)
             {
+                var user = await _userManager.GetUserAsync(User);
+                recipes.UserId = user.Id;
+
                 _context.Add(recipes);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
