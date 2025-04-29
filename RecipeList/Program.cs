@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -20,8 +20,14 @@ builder.Services.AddControllersWithViews(options =>
     var policy = new AuthorizationPolicyBuilder()
                      .RequireAuthenticatedUser()
                      .Build();
-    options.Filters.Add(new AuthorizeFilter(policy)); // 👈 Require login by default
+    options.Filters.Add(new AuthorizeFilter(policy)); // Makes it impossible to use the site without a login
 });
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login"; // Adds a default path for redirect
+});
+
 
 var app = builder.Build();
 
