@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RecipeList.Models;
 using System.Diagnostics;
@@ -13,6 +14,7 @@ namespace RecipeList.Controllers
             _logger = logger;
         }
 
+        
         public IActionResult Index()
         {
             return View();

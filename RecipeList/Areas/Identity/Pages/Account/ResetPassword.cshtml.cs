@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace RecipeList.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class ResetPasswordModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;

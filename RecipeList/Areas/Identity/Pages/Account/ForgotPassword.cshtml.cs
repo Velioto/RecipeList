@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace RecipeList.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class ForgotPasswordModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;

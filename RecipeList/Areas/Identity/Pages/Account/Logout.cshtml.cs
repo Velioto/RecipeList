@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace RecipeList.Areas.Identity.Pages.Account
 {
+
     public class LogoutModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;

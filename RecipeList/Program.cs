@@ -25,7 +25,7 @@ builder.Services.AddControllersWithViews(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Account/Login"; // Adds a default path for redirect
+    options.LoginPath = "/Identity/Account/Login"; // Adds a default path for redirect
 });
 
 
@@ -53,6 +53,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
 app.Run();

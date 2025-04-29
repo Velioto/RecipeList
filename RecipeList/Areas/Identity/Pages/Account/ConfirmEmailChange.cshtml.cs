@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace RecipeList.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class ConfirmEmailChangeModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;
