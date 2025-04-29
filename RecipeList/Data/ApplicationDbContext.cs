@@ -4,7 +4,7 @@ using RecipeList.Models;
 
 namespace RecipeList.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<RecipeListUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

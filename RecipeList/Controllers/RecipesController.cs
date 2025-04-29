@@ -14,9 +14,9 @@ namespace RecipeList.Controllers
     public class RecipesController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<RecipeListUser> _userManager;
 
-        public RecipesController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public RecipesController(ApplicationDbContext context, UserManager<RecipeListUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -25,7 +25,14 @@ namespace RecipeList.Controllers
         // GET: Recipes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Recipes.Include(r => r.User).ToListAsync());
+
+            var user = await _userManager.GetUserAsync(User);
+            var recipes = await _context.Recipes
+                .Where(r => r.UserId == user.Id)
+                .ToListAsync();
+
+            return View(recipes);
+
         }
 
         // GET: Recipes/Details/5
