@@ -24,10 +24,10 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AuthorizeFilter(policy)); // Makes it impossible to use the site without a login
 });
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/Identity/Account/Login"; // Adds a default path for redirect
-});
+//builder.Services.ConfigureApplicationCookie(options =>
+//{
+//    options.LoginPath = "/Identity/Account/Login"; // Adds a default path for redirect (not needed, uncomment if needed)
+//});
 
 
 var app = builder.Build();
