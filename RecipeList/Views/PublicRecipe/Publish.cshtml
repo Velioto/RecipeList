@@ -1,0 +1,39 @@
+﻿@model RecipeList.Models.PublicRecipe
+
+<h2>Publish Recipe</h2>
+
+<form asp-action="PublishConfirmed" method="post">
+    @Html.AntiForgeryToken()
+
+    <div>
+        <label>Name</label>
+        <input asp-for="Name" readonly class="form-control" />
+    </div>
+    <div>
+        <label>Calories</label>
+        <textarea asp-for="Calories" readonly class="form-control"></textarea>
+    </div>
+    <div>
+        <label>Fats</label>
+        <textarea asp-for="Fats" readonly class="form-control"></textarea>
+    </div>
+    <div>
+        <label>Carbs</label>
+        <textarea asp-for="Carbs" readonly class="form-control"></textarea>
+    </div>
+    <div>
+        <label>Proteins</label>
+        <textarea asp-for="Proteins" readonly class="form-control"></textarea>
+    </div>
+    <div>
+        <label>Description</label>
+        <textarea asp-for="Description" readonly class="form-control"></textarea>
+    </div>
+
+    <!-- Hidden fields -->
+    <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="OriginalRecipeId" />
+
+    <button type="submit" class="btn btn-primary">Confirm Publish</button>
+    <a asp-controller="Recipes" asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
