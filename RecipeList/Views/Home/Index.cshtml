@@ -2,12 +2,12 @@
     ViewData["Title"] = "Home Page";
 }
 <style>
-    button {
+    .nav-button {
         transition: all 0.3s ease-in-out;
         font-family: "Dosis", sans-serif;
     }
 
-    button {
+    .nav-button {
         width: fit-content;
         height: auto;
         padding: 12px;
@@ -23,16 +23,15 @@
         
     }
 
-    button:hover {
+    .nav-button:hover {
             transform: translateY(3px);
             box-shadow: none;
         }
 
-    button:active {
+    .nav-button:active {
             opacity: 0.5;
         }
 </style>
 <div class="text-center">
-    <a href="/Recipes"><button>Go to list</button></a>
-    
+    <a href="/Recipes"><button class="nav-button">Go to private list</button></a>
 </div>
