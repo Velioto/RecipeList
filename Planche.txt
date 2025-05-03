@@ -1,10 +1,11 @@
-backend-tyrsachka, razlichni listove, vyzmozhnost za publikuvane, da se vijdat koi e napravil, da ne se vijda site-a kogato ne si lognat 
+backend-tyrsachka (?)
 
+celiq frontend 
 
-frontend- za logvane, homepage(tvoi list, tyrsene i syzdavane), otvarqne na gotova recepta, trqq napravim vseki user da ima sobstven list
-da mogat da postvat
-da mogat da slagat snimki iskam sushto
-i da napravim krasiv frontend
-i vseki user da moje samo toj da pravi promeni vurhu sobstvenite si recepti
+da mogat da slagat snimki 
+
+da mogat da vzimat recepti ot public list-a i da gi slagat v sobstveniq
+
 Userite da imat opciqta da suzdavat username (kojto e unique) za da ne e username-a im prosto email-a im
+
 developer rolq, koqto ima pravo da vijda vsichko, sus stranica (dashboard) kudeto da moje da vijda vsichki user-i, email-ite im i da izbira da vijda listite im ot recepti
