@@ -5,9 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 using RecipeList.Data;
 using RecipeList.Models;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using RecipeList.ViewModel;
+
 
 namespace RecipeList.Controllers
 {
@@ -15,24 +20,26 @@ namespace RecipeList.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<RecipeListUser> _userManager;
+        private readonly IWebHostEnvironment _ENV;
 
-        public RecipesController(ApplicationDbContext context, UserManager<RecipeListUser> userManager)
+        public RecipesController(ApplicationDbContext context, UserManager<RecipeListUser> userManager, IWebHostEnvironment ENV)
         {
             _context = context;
             _userManager = userManager;
+            _ENV = ENV;
         }
 
         // GET: Recipes
         public async Task<IActionResult> Index()
         {
-
             var user = await _userManager.GetUserAsync(User);
             var recipes = await _context.Recipes
                 .Where(r => r.UserId == user.Id)
+                .Include(r => r.Picture)
+                .Include(r => r.User)
                 .ToListAsync();
 
             return View(recipes);
-
         }
 
         // GET: Recipes/Details/5
@@ -64,7 +71,7 @@ namespace RecipeList.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Calories,Fats,Carbs,Proteins,Description")] Recipes recipes)
+        public async Task<IActionResult> Create(RecipeViewModel recipes)
         {
             if (!ModelState.IsValid)
             {
@@ -78,12 +85,35 @@ namespace RecipeList.Controllers
 
             if (ModelState.IsValid)
             {
-                var user = await _userManager.GetUserAsync(User);
-                recipes.UserId = user.Id;
+                var picture = recipes.Picture;
+                var UploadPath = Path.Combine(_ENV.WebRootPath, "Pictures");
+                var FileNAme = Path.GetFileName(recipes.Picture.FileName);
+                var FilePath = Path.Combine(UploadPath, FileNAme);
+                using(var Stream = new FileStream(FilePath, FileMode.Create)) { await picture.CopyToAsync(Stream); }
+                var picture1 = new Pictures
+                {
+                    FileName = FileNAme,
+                    PicturePath = $"/Pictures/{FileNAme}"
+                };
 
-                _context.Add(recipes);
+                _context.Pictures.Add(picture1);
+                await _context.SaveChangesAsync();
+                var recipe = new Recipes
+                {
+                    Name = recipes.Name,
+                    Calories = recipes.Calories,
+                    Fats = recipes.Fats,
+                    Carbs = recipes.Carbs,
+                    Proteins = recipes.Proteins,
+                    Description = recipes.Description,
+                    PictureID = picture1.ID,
+                };
+                var user = await _userManager.GetUserAsync(User);
+                recipe.UserId = user.Id;
+                _context.Recipes.Add(recipe);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+
             }
             return View(recipes);
         }

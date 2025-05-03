@@ -17,6 +17,9 @@ namespace RecipeList.Models
         [ForeignKey("UserId")]
         public virtual RecipeListUser? User { get; set; }
 
+        public int PictureID { get; set; }
+        public Pictures Picture { get; set; }
+
 
     }
 }

@@ -1,4 +1,4 @@
-﻿@model RecipeList.Models.Recipes
+﻿@model RecipeList.ViewModel.RecipeViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -129,7 +129,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <!--Name-->
             <div class="field-container-first">
                 <div asp-validation-summary="ModelOnly"></div>
@@ -196,6 +196,17 @@
                     <div class="underline"></div>
                 </div>
                 <span class="required-field" asp-validation-for="Description"></span>
+            </div>
+
+            <!--Picture-->
+            <div class="field-container">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="input-container-desc">
+                    <input type="file" id="input" required="true" asp-for="Picture">
+                    <label for="input" class="label" asp-for="Picture">Picture</label>
+                    <div class="underline"></div>
+                </div>
+                <span class="required-field" asp-validation-for="Picture"></span>
             </div>
 
 

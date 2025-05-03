@@ -12,5 +12,6 @@ namespace RecipeList.Data
         }
         public DbSet<Recipes> Recipes { get; set; }
         public DbSet<PublicRecipe> PublicRecipes { get; set; }
+        public DbSet<Pictures> Pictures { get; set; }
     }
 }
