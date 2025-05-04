@@ -2,8 +2,6 @@ backend-tyrsachka (?)
 
 celiq frontend 
 
-da mogat da slagat snimki 
-
 da mogat da vzimat recepti ot public list-a i da gi slagat v sobstveniq
 
 Userite da imat opciqta da suzdavat username (kojto e unique) za da ne e username-a im prosto email-a im
