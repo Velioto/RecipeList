@@ -1,6 +1,4 @@
 
 celiq frontend 
 
-da mogat da vzimat recepti ot public list-a i da gi slagat v sobstveniq
-
 developer rolq, koqto ima pravo da vijda vsichko, sus stranica (dashboard) kudeto da moje da vijda vsichki user-i, email-ite im i da izbira da vijda listite im ot recepti (?)
