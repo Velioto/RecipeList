@@ -1,38 +1,24 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
+    var isLoggedIn = User.Identity.IsAuthenticated;
 }
-<style>
-    .nav-button {
-        transition: all 0.3s ease-in-out;
-        font-family: "Dosis", sans-serif;
-    }
+<div class="home-container">
+    <div class="hero-box">
+        <h1>Welcome to RecipeList! 🥗</h1>
+        <p class="lead">Discover, share, and save your favorite recipes in one place.</p>
 
-    .nav-button {
-        width: fit-content;
-        height: auto;
-        padding: 12px;
-        border-radius: 50px;
-        background-image: linear-gradient(135deg, #feb692 0%, #ea5455 100%);
-        box-shadow: 0 20px 30px -6px rgba(238, 103, 97, 0.5);
-        outline: none;
-        cursor: pointer;
-        border: none;
-        font-size: 24px;
-        color: white;
-        font-weight: bold;
-        
-    }
-
-    .nav-button:hover {
-            transform: translateY(3px);
-            box-shadow: none;
+        @if (!isLoggedIn)
+        {
+            <p class="action-text">Start your cooking journey by joining our community:</p>
+            <a class="btn primary-btn" href="/Identity/Account/Register">Register</a>
+            <a class="btn secondary-btn" href="/Identity/Account/Login">Login</a>
         }
-
-    .nav-button:active {
-            opacity: 0.5;
+        else
+        {
+            <p class="action-text">Welcome back, <strong>@User.Identity.Name</strong>! What would you like to do today?</p>
+            <a class="btn primary-btn" href="/Recipes">My Recipes</a>
+            <a class="btn secondary-btn" href="/PublicRecipe">Explore Public Recipes</a>
         }
-</style>
-<div class="text-center">
-    <a href="/Recipes"><button class="nav-button">Go to private list</button></a>
-    <a href="/PublicRecipe"><button class="nav-button">Go to public list</button></a>
+    </div>
+
 </div>
