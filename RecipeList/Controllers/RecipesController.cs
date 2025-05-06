@@ -192,15 +192,30 @@ namespace RecipeList.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var recipes = await _context.Recipes.FindAsync(id);
-            if (recipes != null)
+            var recipe = await _context.Recipes.FindAsync(id);
+            if (recipe == null)
             {
-                _context.Recipes.Remove(recipes);
+                return NotFound();
             }
 
+            // Remove the corresponding public recipe if it exists
+            var publicRecipe = await _context.PublicRecipes
+                .FirstOrDefaultAsync(p => p.OriginalRecipeId == recipe.ID);
+
+            if (publicRecipe != null)
+            {
+                _context.PublicRecipes.Remove(publicRecipe);
+            }
+
+            // Remove the original private recipe
+            _context.Recipes.Remove(recipe);
+
+            // Save all changes in one go
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool RecipesExists(int id)
         {
