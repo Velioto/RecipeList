@@ -34,6 +34,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.PublishedAt)
             </th>
+            <th>Picture</th> <!-- Add Picture header -->
             <th></th>
         </tr>
     </thead>
@@ -66,8 +67,17 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.PublishedAt)
                 </td>
+                <td>
+                    @if (item.Picture != null)
+                    {
+                        <img src="@item.Picture.PicturePath" alt="Recipe Image" width="100" />
+                    }
+                    else
+                    {
+                        <span>No Image</span>
+                    }
+                </td>
             </tr>
         }
     </tbody>
 </table>
-

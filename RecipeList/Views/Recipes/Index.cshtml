@@ -21,7 +21,7 @@
             <th>@Html.DisplayNameFor(model => model.Description)</th>
             <th>Picture</th>
             <th>@Html.DisplayNameFor(model => model.User.UserName)</th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -49,7 +49,10 @@
                     <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.ID">Delete</a> |
-                    <a asp-controller="PublicRecipe" asp-action="Publish" asp-route-id="@item.ID">Publish</a>
+                    <form asp-controller="PublicRecipe" asp-action="Publish" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@item.ID" />
+                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline">Publish</button>
+                    </form>
                 </td>
             </tr>
         }

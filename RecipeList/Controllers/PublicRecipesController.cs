@@ -7,6 +7,7 @@ using RecipeList.Models;
 
 namespace RecipeList.Controllers
 {
+    [Authorize]
     public class PublicRecipeController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -18,14 +19,28 @@ namespace RecipeList.Controllers
             _userManager = userManager;
         }
 
-        [Authorize]
-        public async Task<IActionResult> Publish(int? id)
+        // POST: PublicRecipe/Publish
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Publish(int id)
         {
-            if (id == null) return NotFound();
+            var userId = _userManager.GetUserId(User);
 
-            var recipe = await _context.Recipes.FirstOrDefaultAsync(r => r.ID == id && r.UserId == _userManager.GetUserId(User));
+            var recipe = await _context.Recipes
+                .Include(r => r.Picture)
+                .FirstOrDefaultAsync(r => r.ID == id && r.UserId == userId);
 
-            if (recipe == null) return NotFound();
+            if (recipe == null)
+                return NotFound();
+
+            bool alreadyPublished = await _context.PublicRecipes
+                .AnyAsync(r => r.OriginalRecipeId == recipe.ID);
+
+            if (alreadyPublished)
+            {
+                TempData["ErrorMessage"] = "This recipe has already been published.";
+                return RedirectToAction("Index", "Recipes");
+            }
 
             var publicRecipe = new PublicRecipe
             {
@@ -35,41 +50,27 @@ namespace RecipeList.Controllers
                 Proteins = recipe.Proteins,
                 Fats = recipe.Fats,
                 Carbs = recipe.Carbs,
-                PublishedAt = default,
+                PictureID = recipe.PictureID,
+                UserId = recipe.UserId,
                 OriginalRecipeId = recipe.ID,
-                UserId = recipe.UserId
+                PublishedAt = DateTime.UtcNow
             };
 
-            return View(publicRecipe); // Preview before publishing
+            _context.PublicRecipes.Add(publicRecipe);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Recipe published successfully!";
+            return RedirectToAction("Index", "PublicRecipe");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public async Task<IActionResult> PublishConfirmed(PublicRecipe publicRecipe)
-        {
-            bool alreadyPublished = await _context.PublicRecipes
-            .AnyAsync(r => r.OriginalRecipeId == publicRecipe.OriginalRecipeId);
-
-            if (alreadyPublished)
-            {
-                ModelState.AddModelError("", "This recipe has already been published.");
-                return View(publicRecipe); // Show the error
-            }
-            if (ModelState.IsValid)
-            {
-                _context.PublicRecipes.Add(publicRecipe);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "PublicRecipe");
-            }
-
-            return View(publicRecipe);
-        }
+        // GET: PublicRecipe
         public async Task<IActionResult> Index()
         {
             var publicRecipes = await _context.PublicRecipes
-            .Include(r => r.User) // optional, if you show author name
-            .ToListAsync();
+                .Include(r => r.User)
+                .Include(r => r.Picture)
+                .ToListAsync();
+
             return View(publicRecipes);
         }
     }

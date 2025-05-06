@@ -12,8 +12,8 @@ using RecipeList.Data;
 namespace RecipeList.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250430190034_PublicRecipesInitial")]
-    partial class PublicRecipesInitial
+    [Migration("20250505182844_PictureToRecipe")]
+    partial class PictureToRecipe
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -162,6 +162,27 @@ namespace RecipeList.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("RecipeList.Models.Pictures", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PicturePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Pictures");
+                });
+
             modelBuilder.Entity("RecipeList.Models.PublicRecipe", b =>
                 {
                     b.Property<int>("ID")
@@ -190,6 +211,9 @@ namespace RecipeList.Migrations
                     b.Property<int>("OriginalRecipeId")
                         .HasColumnType("int");
 
+                    b.Property<int>("PictureID")
+                        .HasColumnType("int");
+
                     b.Property<int>("Proteins")
                         .HasColumnType("int");
 
@@ -200,6 +224,8 @@ namespace RecipeList.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("PictureID");
 
                     b.HasIndex("UserId");
 
@@ -296,6 +322,9 @@ namespace RecipeList.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PictureID")
+                        .HasColumnType("int");
+
                     b.Property<int>("Proteins")
                         .HasColumnType("int");
 
@@ -303,6 +332,9 @@ namespace RecipeList.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("PictureID")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -362,20 +394,42 @@ namespace RecipeList.Migrations
 
             modelBuilder.Entity("RecipeList.Models.PublicRecipe", b =>
                 {
+                    b.HasOne("RecipeList.Models.Pictures", "Picture")
+                        .WithMany()
+                        .HasForeignKey("PictureID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RecipeList.Models.RecipeListUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Picture");
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("RecipeList.Models.Recipes", b =>
                 {
+                    b.HasOne("RecipeList.Models.Pictures", "Picture")
+                        .WithOne("Recipe")
+                        .HasForeignKey("RecipeList.Models.Recipes", "PictureID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RecipeList.Models.RecipeListUser", "User")
                         .WithMany("Recipes")
                         .HasForeignKey("UserId");
 
+                    b.Navigation("Picture");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RecipeList.Models.Pictures", b =>
+                {
+                    b.Navigation("Recipe")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("RecipeList.Models.RecipeListUser", b =>

@@ -208,6 +208,9 @@ namespace RecipeList.Migrations
                     b.Property<int>("OriginalRecipeId")
                         .HasColumnType("int");
 
+                    b.Property<int>("PictureID")
+                        .HasColumnType("int");
+
                     b.Property<int>("Proteins")
                         .HasColumnType("int");
 
@@ -218,6 +221,8 @@ namespace RecipeList.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("PictureID");
 
                     b.HasIndex("UserId");
 
@@ -386,9 +391,17 @@ namespace RecipeList.Migrations
 
             modelBuilder.Entity("RecipeList.Models.PublicRecipe", b =>
                 {
+                    b.HasOne("RecipeList.Models.Pictures", "Picture")
+                        .WithMany()
+                        .HasForeignKey("PictureID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RecipeList.Models.RecipeListUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Picture");
 
                     b.Navigation("User");
                 });
