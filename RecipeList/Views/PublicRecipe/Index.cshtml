@@ -1,72 +1,38 @@
 ﻿@model IEnumerable<RecipeList.Models.PublicRecipe>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Public Recipes";
 }
 
-<h1>Index</h1>
+<h1>Public Recipes</h1>
 
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(model => model.Calories)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fats)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Carbs)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Proteins)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User.UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PublishedAt)
-            </th>
-            <th>Picture</th> <!-- Add Picture header -->
-            <th></th>
+            <th>@Html.DisplayNameFor(model => model.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.Calories)</th>
+            <th>@Html.DisplayNameFor(model => model.Fats)</th>
+            <th>@Html.DisplayNameFor(model => model.Carbs)</th>
+            <th>@Html.DisplayNameFor(model => model.Proteins)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
+            <th>@Html.DisplayNameFor(model => model.User.UserName)</th>
+            <th>@Html.DisplayNameFor(model => model.PublishedAt)</th>
+            <th>Picture</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.Calories)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Fats)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Carbs)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Proteins)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.User.UserName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PublishedAt)
-                </td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Calories)</td>
+                <td>@Html.DisplayFor(modelItem => item.Fats)</td>
+                <td>@Html.DisplayFor(modelItem => item.Carbs)</td>
+                <td>@Html.DisplayFor(modelItem => item.Proteins)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@Html.DisplayFor(modelItem => item.User.UserName)</td>
+                <td>@Html.DisplayFor(modelItem => item.PublishedAt)</td>
                 <td>
                     @if (item.Picture != null)
                     {
@@ -75,6 +41,15 @@
                     else
                     {
                         <span>No Image</span>
+                    }
+                </td>
+                <td>
+                    @if (item.User?.UserName == User.Identity.Name)
+                    {
+                        <form asp-action="Remove" method="post" asp-route-id="@item.ID" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
                     }
                 </td>
             </tr>

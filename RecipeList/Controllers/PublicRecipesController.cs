@@ -73,5 +73,25 @@ namespace RecipeList.Controllers
 
             return View(publicRecipes);
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Remove(int id)
+        {
+            var userId = _userManager.GetUserId(User);
+
+            var publicRecipe = await _context.PublicRecipes
+                .FirstOrDefaultAsync(r => r.ID == id && r.UserId == userId);
+
+            if (publicRecipe == null)
+            {
+                return NotFound(); // Either it doesn't exist or doesn't belong to the current user
+            }
+
+            _context.PublicRecipes.Remove(publicRecipe);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
+    
