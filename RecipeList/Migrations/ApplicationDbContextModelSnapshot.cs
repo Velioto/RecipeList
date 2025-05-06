@@ -177,7 +177,7 @@ namespace RecipeList.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Pictures");
+                    b.ToTable("Pictures", (string)null);
                 });
 
             modelBuilder.Entity("RecipeList.Models.PublicRecipe", b =>
@@ -226,7 +226,7 @@ namespace RecipeList.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PublicRecipes");
+                    b.ToTable("PublicRecipes", (string)null);
                 });
 
             modelBuilder.Entity("RecipeList.Models.RecipeListUser", b =>
@@ -335,7 +335,7 @@ namespace RecipeList.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Recipes");
+                    b.ToTable("Recipes", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -126,13 +126,26 @@ namespace RecipeList.Controllers
                 return NotFound();
             }
 
-            var recipes = await _context.Recipes.FindAsync(id);
-            if (recipes == null)
+            var recipe = await _context.Recipes.FindAsync(id);
+            if (recipe == null)
             {
                 return NotFound();
             }
-            return View(recipes);
+
+            // Check if the recipe has been copied to the public list
+            var isCopiedToPublic = await _context.PublicRecipes
+                                                   .AnyAsync(p => p.OriginalRecipeId == recipe.ID);
+
+            if (isCopiedToPublic)
+            {
+                // Optionally, you can add a message to show that the recipe cannot be edited
+                TempData["ErrorMessage"] = "This recipe has been published and cannot be edited.";
+                return RedirectToAction(nameof(Index)); // Redirect to the list of recipes
+            }
+
+            return View(recipe);
         }
+
 
         // POST: Recipes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.

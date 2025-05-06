@@ -6,6 +6,15 @@
 
 <h1>Public Recipes</h1>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -49,6 +58,13 @@
                         <form asp-action="Remove" method="post" asp-route-id="@item.ID" style="display:inline;">
                             @Html.AntiForgeryToken()
                             <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="Copy" method="post" asp-route-id="@item.ID" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-primary btn-sm">Copy to My Recipes</button>
                         </form>
                     }
                 </td>

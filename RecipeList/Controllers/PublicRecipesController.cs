@@ -92,6 +92,52 @@ namespace RecipeList.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Copy(int id)
+        {
+            var userId = _userManager.GetUserId(User);
+
+            var publicRecipe = await _context.PublicRecipes
+                .Include(r => r.Picture)
+                .FirstOrDefaultAsync(r => r.ID == id);
+
+            if (publicRecipe == null)
+                return NotFound();
+
+            // Check if the user already copied this recipe (optional, but good to avoid dupes)
+            bool alreadyCopied = await _context.Recipes.AnyAsync(r =>
+                r.Name == publicRecipe.Name &&
+                r.Description == publicRecipe.Description &&
+                r.UserId == userId &&
+                r.PictureID == publicRecipe.PictureID);
+
+            if (alreadyCopied)
+            {
+                TempData["ErrorMessage"] = "You already have this recipe in your list.";
+                return RedirectToAction("Index");
+            }
+
+            var copiedRecipe = new Recipes
+            {
+                Name = publicRecipe.Name,
+                Description = publicRecipe.Description,
+                Calories = publicRecipe.Calories,
+                Proteins = publicRecipe.Proteins,
+                Fats = publicRecipe.Fats,
+                Carbs = publicRecipe.Carbs,
+                PictureID = publicRecipe.PictureID, // Reuse picture
+                UserId = userId
+            };
+
+            _context.Recipes.Add(copiedRecipe);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Recipe copied to your list!";
+            return RedirectToAction("Index");
+        }
+
     }
 }
     
