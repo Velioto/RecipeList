@@ -107,7 +107,7 @@ namespace RecipeList.Controllers
                 }
                 return View(recipes); // Return the view with errors
             }
-
+            
             if (ModelState.IsValid)
             {
                 var picture = recipes.Picture;
@@ -151,21 +151,23 @@ namespace RecipeList.Controllers
                 return NotFound();
             }
 
-            var recipe = await _context.Recipes.FindAsync(id);
+            var recipe = await _context.Recipes
+                .Include(r => r.Picture)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
             if (recipe == null)
             {
                 return NotFound();
             }
 
-            // Check if the recipe has been copied to the public list
+            // Prevent editing if it's a public recipe
             var isCopiedToPublic = await _context.PublicRecipes
-                                                   .AnyAsync(p => p.OriginalRecipeId == recipe.ID);
+                .AnyAsync(p => p.OriginalRecipeId == recipe.ID);
 
             if (isCopiedToPublic)
             {
-                // Optionally, you can add a message to show that the recipe cannot be edited
                 TempData["ErrorMessage"] = "This recipe has been published and cannot be edited.";
-                return RedirectToAction(nameof(Index)); // Redirect to the list of recipes
+                return RedirectToAction(nameof(Index));
             }
 
             return View(recipe);
@@ -173,39 +175,52 @@ namespace RecipeList.Controllers
 
 
         // POST: Recipes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,UserID,Calories,Fats,Carbs,Proteins,Description")] Recipes recipes)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,UserId,Calories,Fats,Carbs,Proteins,Description")] Recipes recipe)
         {
-            if (id != recipes.ID)
+            if (id != recipe.ID)
             {
                 return NotFound();
             }
+
+            ModelState.Remove("Picture");
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(recipes);
+                    var existingRecipe = await _context.Recipes.FindAsync(id);
+                    if (existingRecipe == null)
+                        return NotFound();
+
+                    // Only update basic fields
+                    existingRecipe.Name = recipe.Name;
+                    existingRecipe.Calories = recipe.Calories;
+                    existingRecipe.Fats = recipe.Fats;
+                    existingRecipe.Carbs = recipe.Carbs;
+                    existingRecipe.Proteins = recipe.Proteins;
+                    existingRecipe.Description = recipe.Description;
+
+                    _context.Update(existingRecipe);
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RecipesExists(recipes.ID))
-                    {
+                    if (!RecipesExists(recipe.ID))
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(recipes);
+
+            return View(recipe);
         }
+    
+
+
 
         // GET: Recipes/Delete/5
         public async Task<IActionResult> Delete(int? id)

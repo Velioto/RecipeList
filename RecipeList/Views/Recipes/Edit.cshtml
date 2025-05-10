@@ -4,57 +4,174 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<style>
+    .edit-recipe-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background-color: #ffffff;
+        padding: 30px;
+        margin: auto;
+        margin-top: 3em;
+        width: 650px;
+        border-radius: 20px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
 
-<h4>Recipes</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            
-            <div class="form-group">
-                <label asp-for="Calories" class="control-label"></label>
-                <input asp-for="Calories" class="form-control" />
-                <span asp-validation-for="Calories" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Fats" class="control-label"></label>
-                <input asp-for="Fats" class="form-control" />
-                <span asp-validation-for="Fats" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Carbs" class="control-label"></label>
-                <input asp-for="Carbs" class="form-control" />
-                <span asp-validation-for="Carbs" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Proteins" class="control-label"></label>
-                <input asp-for="Proteins" class="form-control" />
-                <span asp-validation-for="Proteins" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        .edit-recipe-form .number-input {
+            display: flex;
+            align-items: left;
+            gap: 5px;
+        }
+
+            .edit-recipe-form .number-input input {
+                width: 60px;
+                text-align: center;
+                font-size: 16px;
+            }
+
+        .edit-recipe-form .flex-column > label {
+            color: #151717;
+            font-weight: 600;
+        }
+
+        .edit-recipe-form .inputForm {
+            border: 1.5px solid #ecedec;
+            border-radius: 10px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            transition: 0.2s ease-in-out;
+        }
+
+        .edit-recipe-form .inputForm-Name {
+            border: 1.5px solid #ecedec;
+            border-radius: 10px;
+            height: 50px;
+            width: fit-content;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            transition: 0.2s ease-in-out;
+        }
+
+        .edit-recipe-form .inputForm-Desc {
+            border: 1.5px solid #ecedec;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            transition: 0.2s ease-in-out;
+        }
+
+        .edit-recipe-form .input {
+            margin-left: 10px;
+            border-radius: 10px;
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+
+            .edit-recipe-form .input:focus {
+                outline: none;
+            }
+
+        .edit-recipe-form .inputForm:focus-within {
+            border: 1.5px solid #2d79f3;
+        }
+
+        .edit-recipe-form .button-submit {
+            margin: 20px 0 10px 0;
+            background-color: #4caf50;
+            border: none;
+            color: white;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 10px;
+            height: 50px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .edit-recipe-form .required-field {
+            color: red;
+        }
+
+        .edit-recipe-form a {
+            text-align: center;
+            display: block;
+            margin-top: 10px;
+        }
+</style>
+
+<form class="edit-recipe-form" asp-action="Edit" method="post">
+    <h2>Edit your recipe</h2>
+    <input type="hidden" asp-for="ID" />
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <!-- Name -->
+    <div class="flex-column">
+        <label asp-for="Name"></label>
     </div>
-</div>
+    <div class="inputForm-Name">
+        <input class="input" asp-for="Name" placeholder="Enter recipe name" />
+    </div>
+    <span class="required-field" asp-validation-for="Name"></span>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <!-- Description -->
+    <div class="flex-column">
+        <label asp-for="Description"></label>
+    </div>
+    <div class="inputForm-Desc">
+        <textarea class="input" asp-for="Description" placeholder="Enter instructions on how your recipe is made"></textarea>
+    </div>
+    <span class="required-field" asp-validation-for="Description"></span>
+
+    <!-- Calories -->
+    <div class="number-input">
+        <label asp-for="Calories"></label>
+        <input asp-for="Calories" type="number" min="0" max="10000" />
+    </div>
+    <span class="required-field" asp-validation-for="Calories"></span>
+
+    <!-- Fats -->
+    <div class="number-input">
+        <label asp-for="Fats"></label>
+        <input asp-for="Fats" type="number" min="0" max="10000" />
+    </div>
+    <span class="required-field" asp-validation-for="Fats"></span>
+
+    <!-- Carbs -->
+    <div class="number-input">
+        <label asp-for="Carbs"></label>
+        <input asp-for="Carbs" type="number" min="0" max="10000" />
+    </div>
+    <span class="required-field" asp-validation-for="Carbs"></span>
+
+    <!-- Proteins -->
+    <div class="number-input">
+        <label asp-for="Proteins"></label>
+        <input asp-for="Proteins" type="number" min="0" max="10000" />
+    </div>
+    <span class="required-field" asp-validation-for="Proteins"></span>
+
+    <!-- Submit -->
+    <div>
+        <input type="submit" value="Save" class="button-submit" />
+    </div>
+
+    <!-- Back -->
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
