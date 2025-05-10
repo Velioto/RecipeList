@@ -19,7 +19,6 @@ namespace RecipeList.Controllers
             _userManager = userManager;
         }
 
-        // POST: PublicRecipe/Publish
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Publish(int id)
@@ -33,8 +32,35 @@ namespace RecipeList.Controllers
             if (recipe == null)
                 return NotFound();
 
+            // Prevent publishing if it's a copy of someone else's public recipe
+            bool isCopiedFromPublic = await _context.PublicRecipes
+                .AnyAsync(pr =>
+                    pr.Name == recipe.Name &&
+                    pr.Description == recipe.Description &&
+                    pr.PictureID == recipe.PictureID &&
+                    pr.Calories == recipe.Calories &&
+                    pr.Proteins == recipe.Proteins &&
+                    pr.Fats == recipe.Fats &&
+                    pr.Carbs == recipe.Carbs &&
+                    pr.UserId != userId); // Different author = likely copied
+
+            if (isCopiedFromPublic)
+            {
+                TempData["ErrorMessage"] = "You cannot publish a copied recipe.";
+                return RedirectToAction("Index", "Recipes");
+            }
+
+            // Prevent re-publishing a previously published (and possibly removed) recipe by this user
             bool alreadyPublished = await _context.PublicRecipes
-                .AnyAsync(r => r.OriginalRecipeId == recipe.ID);
+                .AnyAsync(r =>
+                    r.Name == recipe.Name &&
+                    r.Description == recipe.Description &&
+                    r.PictureID == recipe.PictureID &&
+                    r.Calories == recipe.Calories &&
+                    r.Proteins == recipe.Proteins &&
+                    r.Fats == recipe.Fats &&
+                    r.Carbs == recipe.Carbs &&
+                    r.UserId == userId); // Same author
 
             if (alreadyPublished)
             {
@@ -52,7 +78,6 @@ namespace RecipeList.Controllers
                 Carbs = recipe.Carbs,
                 PictureID = recipe.PictureID,
                 UserId = recipe.UserId,
-                OriginalRecipeId = recipe.ID,
                 PublishedAt = DateTime.UtcNow
             };
 
@@ -62,6 +87,10 @@ namespace RecipeList.Controllers
             TempData["SuccessMessage"] = "Recipe published successfully!";
             return RedirectToAction("Index", "PublicRecipe");
         }
+
+
+
+
 
         // GET: PublicRecipe
         public async Task<IActionResult> Index()
@@ -92,6 +121,7 @@ namespace RecipeList.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -138,6 +168,36 @@ namespace RecipeList.Controllers
             return RedirectToAction("Index");
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            var recipe = await _context.PublicRecipes
+                .Include(r => r.Picture)
+                .Include(r => r.User) // <-- Ensure the User is loaded
+                .FirstOrDefaultAsync(r => r.ID == id);
+
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+
+            // Optional: check if recipe has been copied by this user to disable "Copy to My List"
+            var userId = _userManager.GetUserId(User);
+            bool isAlreadyCopied = await _context.Recipes.AnyAsync(r =>
+                r.Name == recipe.Name &&
+                r.Description == recipe.Description &&
+                r.Calories == recipe.Calories &&
+                r.Fats == recipe.Fats &&
+                r.Carbs == recipe.Carbs &&
+                r.Proteins == recipe.Proteins &&
+                r.PictureID == recipe.PictureID &&
+                r.UserId == userId
+            );
+
+            ViewBag.CanCopy = !isAlreadyCopied;
+
+            return View(recipe);
+        }
+
+
     }
 }
-    

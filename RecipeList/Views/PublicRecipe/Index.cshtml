@@ -1,74 +1,36 @@
 ﻿@model IEnumerable<RecipeList.Models.PublicRecipe>
 
 @{
-    ViewData["Title"] = "Public Recipes";
+    ViewData["Title"] = "Public Recipe List";
 }
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Public Recipes</h1>
+    <a href="/Recipes/Create" class="btn btn-success">+ Create New Recipe</a>
+</div>
 
-<h1>Public Recipes</h1>
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Name)</th>
-            <th>@Html.DisplayNameFor(model => model.Calories)</th>
-            <th>@Html.DisplayNameFor(model => model.Fats)</th>
-            <th>@Html.DisplayNameFor(model => model.Carbs)</th>
-            <th>@Html.DisplayNameFor(model => model.Proteins)</th>
-            <th>@Html.DisplayNameFor(model => model.Description)</th>
-            <th>@Html.DisplayNameFor(model => model.User.UserName)</th>
-            <th>@Html.DisplayNameFor(model => model.PublishedAt)</th>
-            <th>Picture</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                <td>@Html.DisplayFor(modelItem => item.Calories)</td>
-                <td>@Html.DisplayFor(modelItem => item.Fats)</td>
-                <td>@Html.DisplayFor(modelItem => item.Carbs)</td>
-                <td>@Html.DisplayFor(modelItem => item.Proteins)</td>
-                <td>@Html.DisplayFor(modelItem => item.Description)</td>
-                <td>@Html.DisplayFor(modelItem => item.User.UserName)</td>
-                <td>@Html.DisplayFor(modelItem => item.PublishedAt)</td>
-                <td>
-                    @if (item.Picture != null)
-                    {
-                        <img src="@item.Picture.PicturePath" alt="Recipe Image" width="100" />
-                    }
-                    else
-                    {
-                        <span>No Image</span>
-                    }
-                </td>
-                <td>
-                    @if (item.User?.UserName == User.Identity.Name)
-                    {
-                        <form asp-action="Remove" method="post" asp-route-id="@item.ID" style="display:inline;">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <form asp-action="Copy" method="post" asp-route-id="@item.ID" style="display:inline;">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-primary btn-sm">Copy to My Recipes</button>
-                        </form>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5>
+                        <a asp-action="Details" asp-route-id="@item.ID" class="text-decoration-none text-black">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </a>
+                    </h5>
+                    <div class="mt-3">
+                        @if (item.Picture != null)
+                        {
+                            <img src="@item.Picture.PicturePath" alt="Recipe Image" class="img-fluid rounded" />
+                        }
+                        else
+                        {
+                            <div class="text-muted">No Image</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

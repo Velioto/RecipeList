@@ -42,23 +42,40 @@ namespace RecipeList.Controllers
             return View(recipes);
         }
 
-        // GET: Recipes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var userId = _userManager.GetUserId(User);
 
-            var recipes = await _context.Recipes.Include(r => r.User)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (recipes == null)
-            {
-                return NotFound();
-            }
+            var recipe = await _context.Recipes
+                .Include(r => r.Picture)
+                .FirstOrDefaultAsync(r => r.ID == id && r.UserId == userId);
 
-            return View(recipes);
+            if (recipe == null)
+                return NotFound();
+
+            // Check if this recipe was copied from a public recipe (owned by someone else)
+            bool isCopiedFromPublic = await _context.PublicRecipes
+                .AnyAsync(pr =>
+                    pr.Name == recipe.Name &&
+                    pr.Description == recipe.Description &&
+                    pr.PictureID == recipe.PictureID &&
+                    pr.Calories == recipe.Calories &&
+                    pr.Proteins == recipe.Proteins &&
+                    pr.Fats == recipe.Fats &&
+                    pr.Carbs == recipe.Carbs &&
+                    pr.UserId != userId); // It must be from a different user
+
+            // Check if it's already published
+            bool alreadyPublished = await _context.PublicRecipes
+                .AnyAsync(r => r.OriginalRecipeId == recipe.ID);
+
+            // Pass the values to the view
+            ViewBag.IsCopiedFromPublic = isCopiedFromPublic;
+            ViewBag.IsAlreadyPublished = alreadyPublished;
+
+            return View(recipe);
         }
+
 
         // GET: Recipes/Create
         public IActionResult Create()
@@ -66,9 +83,6 @@ namespace RecipeList.Controllers
             return View();
         }
 
-        // POST: Recipes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RecipeViewModel recipes)
@@ -89,7 +103,7 @@ namespace RecipeList.Controllers
                 var UploadPath = Path.Combine(_ENV.WebRootPath, "Pictures");
                 var FileNAme = Path.GetFileName(recipes.Picture.FileName);
                 var FilePath = Path.Combine(UploadPath, FileNAme);
-                using(var Stream = new FileStream(FilePath, FileMode.Create)) { await picture.CopyToAsync(Stream); }
+                using (var Stream = new FileStream(FilePath, FileMode.Create)) { await picture.CopyToAsync(Stream); }
                 var picture1 = new Pictures
                 {
                     FileName = FileNAme,
