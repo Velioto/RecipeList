@@ -1,1 +1,0 @@
-﻿DROP INDEX IX_Recipes_PictureID ON dbo.Recipes;

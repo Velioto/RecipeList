@@ -88,7 +88,12 @@ namespace RecipeList.Migrations
                 principalTable: "Pictures",
                 principalColumn: "ID",
                 onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.DropIndex(
+                name: "IX_Recipes_PictureID",
+                table: "Recipes");
         }
+
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -110,6 +115,8 @@ namespace RecipeList.Migrations
             migrationBuilder.DropColumn(
                 name: "PictureID",
                 table: "Recipes");
+
+            
         }
     }
 }
