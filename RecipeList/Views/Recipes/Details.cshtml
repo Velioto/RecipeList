@@ -22,8 +22,11 @@
 
     <div class="mb-4">
         <h4>Description</h4>
-        <p>@Model.Description</p>
+        <div style="height: 7.5em; overflow-y: auto; overflow-x: hidden; background-color: white; padding: 10px; border: 1px solid #ccc; border-radius: 8px; line-height: 1.5; white-space: normal; word-wrap: break-word;">
+            @Model.Description
+        </div>
     </div>
+
 
     <div class="row">
         <div class="col-md-3"><strong>Calories:</strong> @Model.Calories</div>
@@ -55,5 +58,6 @@
     </div>
 
 </div>
+
 
 

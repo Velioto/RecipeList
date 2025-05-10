@@ -22,14 +22,17 @@
 
     <div class="mb-4">
         <h4>Description</h4>
-        <p>@Model.Description</p>
+        <div style="height: 7.5em; overflow-y: auto; overflow-x: hidden; background-color: white; padding: 10px; border: 1px solid #ccc; border-radius: 8px; line-height: 1.5; white-space: normal; word-wrap: break-word;">
+            @Model.Description
+        </div>
     </div>
 
-    <div class="d-flex flex-column">
-        <div><strong>Calories:</strong> @Model.Calories</div>
-        <div><strong>Fats:</strong> @Model.Fats</div>
-        <div><strong>Carbs:</strong> @Model.Carbs</div>
-        <div><strong>Proteins:</strong> @Model.Proteins</div>
+
+    <div class="row">
+        <div class="col-md-3"><strong>Calories:</strong> @Model.Calories</div>
+        <div class="col-md-3"><strong>Fats:</strong> @Model.Fats</div>
+        <div class="col-md-3"><strong>Carbs:</strong> @Model.Carbs</div>
+        <div class="col-md-3"><strong>Proteins:</strong> @Model.Proteins</div>
     </div>
 
     <div class="mt-4 d-flex justify-content-between">
@@ -52,4 +55,8 @@
     <div class="mt-4">
         <a asp-action="Index" class="btn btn-secondary">Back to List</a>
     </div>
+    <div class="mt-4 text-center" style="color: #000;">
+        <p><strong>Published by</strong> @Model.User.UserName <strong> on</strong> @Model.PublishedAt.ToString("MMMM dd, yyyy")</p>
+    </div>
 </div>
+

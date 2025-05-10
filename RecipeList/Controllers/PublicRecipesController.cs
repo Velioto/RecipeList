@@ -25,6 +25,7 @@ namespace RecipeList.Controllers
         {
             var userId = _userManager.GetUserId(User);
 
+            // Only select the recipe if it belongs to the current user
             var recipe = await _context.Recipes
                 .Include(r => r.Picture)
                 .FirstOrDefaultAsync(r => r.ID == id && r.UserId == userId);
@@ -32,25 +33,7 @@ namespace RecipeList.Controllers
             if (recipe == null)
                 return NotFound();
 
-            // Prevent publishing if it's a copy of someone else's public recipe
-            bool isCopiedFromPublic = await _context.PublicRecipes
-                .AnyAsync(pr =>
-                    pr.Name == recipe.Name &&
-                    pr.Description == recipe.Description &&
-                    pr.PictureID == recipe.PictureID &&
-                    pr.Calories == recipe.Calories &&
-                    pr.Proteins == recipe.Proteins &&
-                    pr.Fats == recipe.Fats &&
-                    pr.Carbs == recipe.Carbs &&
-                    pr.UserId != userId); // Different author = likely copied
-
-            if (isCopiedFromPublic)
-            {
-                TempData["ErrorMessage"] = "You cannot publish a copied recipe.";
-                return RedirectToAction("Index", "Recipes");
-            }
-
-            // Prevent re-publishing a previously published (and possibly removed) recipe by this user
+            // Prevent duplicate publishings of the same recipe by the same user
             bool alreadyPublished = await _context.PublicRecipes
                 .AnyAsync(r =>
                     r.Name == recipe.Name &&
@@ -60,11 +43,10 @@ namespace RecipeList.Controllers
                     r.Proteins == recipe.Proteins &&
                     r.Fats == recipe.Fats &&
                     r.Carbs == recipe.Carbs &&
-                    r.UserId == userId); // Same author
+                    r.UserId == userId);
 
             if (alreadyPublished)
             {
-                TempData["ErrorMessage"] = "This recipe has already been published.";
                 return RedirectToAction("Index", "Recipes");
             }
 
@@ -84,9 +66,9 @@ namespace RecipeList.Controllers
             _context.PublicRecipes.Add(publicRecipe);
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Recipe published successfully!";
             return RedirectToAction("Index", "PublicRecipe");
         }
+
 
 
 

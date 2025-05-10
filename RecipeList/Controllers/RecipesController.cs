@@ -42,39 +42,50 @@ namespace RecipeList.Controllers
             return View(recipes);
         }
 
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int? id)
         {
+            if (id == null)
+                return NotFound();
+
             var userId = _userManager.GetUserId(User);
 
             var recipe = await _context.Recipes
                 .Include(r => r.Picture)
-                .FirstOrDefaultAsync(r => r.ID == id && r.UserId == userId);
+                .FirstOrDefaultAsync(m => m.ID == id && m.UserId == userId);
 
             if (recipe == null)
                 return NotFound();
 
-            // Check if this recipe was copied from a public recipe (owned by someone else)
-            bool isCopiedFromPublic = await _context.PublicRecipes
-                .AnyAsync(pr =>
-                    pr.Name == recipe.Name &&
-                    pr.Description == recipe.Description &&
-                    pr.PictureID == recipe.PictureID &&
-                    pr.Calories == recipe.Calories &&
-                    pr.Proteins == recipe.Proteins &&
-                    pr.Fats == recipe.Fats &&
-                    pr.Carbs == recipe.Carbs &&
-                    pr.UserId != userId); // It must be from a different user
+            // Check if recipe is copied from public (based on matching userId and content)
+            bool isCopied = await _context.PublicRecipes.AnyAsync(pr =>
+                pr.Name == recipe.Name &&
+                pr.Description == recipe.Description &&
+                pr.PictureID == recipe.PictureID &&
+                pr.Calories == recipe.Calories &&
+                pr.Proteins == recipe.Proteins &&
+                pr.Fats == recipe.Fats &&
+                pr.Carbs == recipe.Carbs &&
+                pr.UserId != userId);
 
-            // Check if it's already published
-            bool alreadyPublished = await _context.PublicRecipes
-                .AnyAsync(r => r.OriginalRecipeId == recipe.ID);
+            ViewBag.IsCopiedFromPublic = isCopied;
 
-            // Pass the values to the view
-            ViewBag.IsCopiedFromPublic = isCopiedFromPublic;
-            ViewBag.IsAlreadyPublished = alreadyPublished;
+            // Check if recipe is already published
+            bool alreadyPublished = await _context.PublicRecipes.AnyAsync(pr =>
+                pr.Name == recipe.Name &&
+                pr.Description == recipe.Description &&
+                pr.PictureID == recipe.PictureID &&
+                pr.Calories == recipe.Calories &&
+                pr.Proteins == recipe.Proteins &&
+                pr.Fats == recipe.Fats &&
+                pr.Carbs == recipe.Carbs &&
+                pr.UserId == userId);
+
+            // Show publish button only if recipe is not copied and not already published
+            ViewBag.CanPublish = !isCopied && !alreadyPublished;
 
             return View(recipe);
         }
+
 
 
         // GET: Recipes/Create
