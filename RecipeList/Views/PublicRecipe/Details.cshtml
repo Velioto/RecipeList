@@ -28,13 +28,12 @@
     </div>
 
 
-    <div class="row">
-        <div class="col-md-3"><strong>Calories:</strong> @Model.Calories</div>
-        <div class="col-md-3"><strong>Fats:</strong> @Model.Fats</div>
-        <div class="col-md-3"><strong>Carbs:</strong> @Model.Carbs</div>
-        <div class="col-md-3"><strong>Proteins:</strong> @Model.Proteins</div>
+    <div>
+        <div style="margin-bottom: 10px;"><strong>Calories:</strong> @Model.Calories</div>
+        <div style="margin-bottom: 10px;"><strong>Fats:</strong> @Model.Fats</div>
+        <div style="margin-bottom: 10px;"><strong>Carbs:</strong> @Model.Carbs</div>
+        <div style="margin-bottom: 10px;"><strong>Proteins:</strong> @Model.Proteins</div>
     </div>
-
     <div class="mt-4 d-flex justify-content-between">
         @if (Model.User?.UserName == User.Identity.Name)
         {
